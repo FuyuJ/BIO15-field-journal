@@ -230,10 +230,10 @@
 
   /* species list */
   .species{ list-style:none; margin:6px 0; }
-  .species li{ padding:11px 0; border-bottom:1px dashed var(--line); display:flex; gap:14px; align-items:baseline; }
-  .species .sci{ font-family:var(--font-disp); font-style:italic; font-weight:600; font-size:17px; min-width:200px; }
+  .species li{ padding:11px 0; border-bottom:1px dashed var(--line); display:flex; flex-wrap:wrap; gap:2px 12px; align-items:baseline; }
+  .species .sci{ font-family:var(--font-disp); font-style:italic; font-weight:600; font-size:17px; }
   .species .com{ font-size:14px; color:var(--ink-soft); }
-  .species .note{ font-size:13.5px; color:var(--ink-soft); flex:1; }
+  .species .note{ font-size:13.5px; color:var(--ink-soft); flex:1 1 100%; margin-top:2px; }
 
   /* reflection essay */
   .essay{ margin-top:6px; }
@@ -260,8 +260,12 @@
   /* mobile */
   @media (max-width:820px){
     #app{ grid-template-columns:1fr; grid-template-rows:auto 1fr; }
-    #index{ border-right:none; border-bottom:2px solid var(--line); max-height:42vh; }
-    .cover h1{ font-size:28px; }
+    #index{ border-right:none; border-bottom:2px solid var(--line); max-height:50vh; }
+    .cover{ padding:16px 20px 12px; }
+    .cover h1{ font-size:24px; }
+    .cover .sub{ font-size:12px; }
+    .index-head{ padding:10px 20px 6px; }
+    .index-list{ min-height:30vh; }
     .data-sheet .row{ grid-template-columns:1fr; }
     .data-sheet .cell{ border-right:none; }
     .entry-title{ font-size:34px; }
