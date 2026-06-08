@@ -172,9 +172,13 @@
     font-family:var(--font-mono); font-size:12px; letter-spacing:.08em;
     background:var(--ink); color:var(--paper); border:none; cursor:pointer;
     padding:9px 16px; border-radius:6px; transition:.18s;
+    flex:none; white-space:nowrap;
   }
   .back-btn:hover{ background:var(--sage-deep); }
-  .entry-bar .where{ font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft); letter-spacing:.05em; }
+  .entry-bar .where{
+    font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft); letter-spacing:.05em;
+    min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
 
   .sheet{ max-width:880px; margin:0 auto; padding:42px 38px 90px; }
 
