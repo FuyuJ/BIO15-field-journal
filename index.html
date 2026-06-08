@@ -191,7 +191,13 @@
     margin:8px 0 4px; font-variation-settings:"opsz" 144;
   }
   .entry-site{ font-family:var(--font-disp); font-style:italic; font-size:20px; color:var(--sage-deep); }
-
+/* icon next to the entry title */
+  .title-row{ display:flex; align-items:flex-start; gap:14px; margin:10px 0 4px; }
+  .title-row .entry-title{ margin:0; }
+  .title-pin{ flex:none; }
+  .title-pin svg{ width:38px; height:auto; display:block; }
+  .title-pin .pin{ cursor:default; transform:none; }
+  .title-pin .pin:hover{ transform:none; }
   /* baseline data sheet — the required fields, styled like a field form */
   .data-sheet{
     margin:26px 0; border:1.5px solid var(--ink); border-radius:4px;
@@ -770,7 +776,10 @@ function openEntry(i){
 
   document.getElementById('sheet').innerHTML = `
     <div class="entry-theme">${e.theme}</div>
-    <h1 class="entry-title">${e.title}</h1>
+    <div class="title-row">
+      <span class="title-pin">${pinSVG(e.icon)}</span>
+      <h1 class="entry-title">${e.title}</h1>
+    </div>
     <div class="entry-site">${e.site}</div>
 
     <div class="data-sheet">
