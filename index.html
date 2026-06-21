@@ -250,6 +250,8 @@
   .essay::after{ content:""; display:block; clear:both; }
   .essay p{ font-size:16.5px; line-height:1.78; margin:0 0 18px; }
   .essay .prompt-lead{ font-family:var(--font-disp); font-style:italic; font-weight:600; }
+  .essay a{ color:var(--rust); text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1px; }
+  .essay a:hover{ color:var(--sage-deep); }
   .pl-notice{ color:var(--sage-deep); }
   .pl-wonder{ color:var(--rust); }
   .pl-reminds{ color:var(--water); }
@@ -450,7 +452,7 @@ const ENTRIES = [
     images: [],
     species: [],
     reflection: [
-      { type:"text", text:"Today was our first ecology class outing at the Foothills Nature Preserve! We had the chance to join GrassRoots Ecology in a restoration activity — removing the invasive French broom (<em>Genista monspessulana</em>) from the preserve. We met up at the Interpretive Center at 9 AM to collect our tools (gloves and weed wrenches) and started the day with a quick intro and stretching session. We then made our way up the Los Trancos Trail, with blue oak woodland enveloping us at the base and the initial ascent. As we reached the top of the hill, we emerged from the shadowy, cool, dense oak woodland into a sunny open area surrounded by tall shrubs and only a sparse scattering of oak trees. It was striking how fast the vegetation flipped, from tall, shady oaks to low, tough, grey-green shrubs, almost the moment we crested the hill. A beautiful, clear, open view of the bay greeted us, and on either side of the trail chamise (<em>Adenostoma fasciculatum</em>) and manzanita (<em>Arctostaphylos</em>) surrounded us, with a lot of the shrubs flowering. One broad-leaved shrub with fluffy cream-colored flower plumes caught my eye, but I couldn't quite figure out what it was." },
+      { type:"text", text:"Today was our first ecology class outing at the Foothills Nature Preserve! We had the chance to join <a href='https://www.grassrootsecology.org/foothills-nature-preserve' target='_blank' rel='noopener'>GrassRoots Ecology</a> in a restoration activity — removing the invasive French broom (<a href='https://www.cal-ipc.org/resources/library/publications/ipcw/report52/' target='_blank' rel='noopener'><em>Genista monspessulana</em></a>) from the preserve. We met up at the Interpretive Center (<a href='http://google.com/maps/place/Foothills+Park+Nature+Interpretive+Center/@37.3634724,-122.1885648,17z/data=!3m1!4b1!4m5!3m4!1s0x808fafc2ce8f3131:0x71988e3b80e89930!8m2!3d37.3635439!4d-122.1863128?shorturl=1' target='_blank' rel='noopener'>Location</a>) at 9 AM to collect our tools (gloves and weed wrenches) and started the day with a quick intro and stretching session. We then made our way up the Los Trancos Trail, with blue oak woodland enveloping us at the base and the initial ascent. As we reached the top of the hill, we emerged from the shadowy, cool, dense oak woodland into a sunny open area surrounded by tall shrubs and only a sparse scattering of oak trees. It was striking how fast the vegetation flipped, from tall, shady oaks to low, tough, grey-green shrubs, almost the moment we crested the hill. A beautiful, clear, open view of the bay greeted us, and on either side of the trail chamise (<em>Adenostoma fasciculatum</em>) and manzanita (<em>Arctostaphylos</em>) surrounded us, with a lot of the shrubs flowering. One broad-leaved shrub with fluffy cream-colored flower plumes caught my eye, but I couldn't quite figure out what it was." },
       { type:"image", src:"images/foothill2.JPEG", caption:"Looking up the Los Trancos Trail, where shady oak woodland opens onto grassland and chaparral with the Bay beyond.", scale:"Trail ≈ 1–2 m wide" },
       { type:"image", src:"images/foothill1.JPEG", caption:"Chaparral shrubs flowering along the ridge. The needle-leaved shrub matches chamise (<em>Adenostoma fasciculatum</em>); the broad-leaved shrub with cream flower plumes I haven't keyed out yet." },
       { type:"text", text:"Continuing our hike, we soon came upon a distinct mix of chaparral and oak woodland habitats on the slopes of the preserve, chaparral taking over the drier, sun-drenched south- and west-facing slopes, and oak woodland cropping up on the wetter, cooler north- and east-facing slopes. It was basically slope aspect in action: the south- and west-facing sides get more direct sun, so their soils run hotter and drier and favor the fire-adapted, drought-tolerant chaparral, while the north- and east-facing sides hold more moisture and stay cool enough for the oaks and a shadier understory. Same hillside, two totally different communities, mostly decided by sun and water." },
@@ -882,15 +884,14 @@ function mediaTag(src){
   return `<img src="${src}" alt="">`;
 }
 
-// ---- render the reflection essay: text / prompt / image blocks, with consecutive photos grouped into a grid
+// ---- render the reflection essay: text / prompt / image blocks, with photos grouped into a half-width grid
 function renderBlocks(blocks){
   const P = { notice:['I notice…','pl-notice'], wonder:['I wonder…','pl-wonder'], reminds:['It reminds me of…','pl-reminds'] };
   const figure = (b, opts)=>{
     opts = opts || {};
     const align = opts.align || b.align || 'full';
-    const span2 = opts.span2 ? ' span2' : '';
     const inner = mediaTag(b.src);
-    return `<figure class="inline ${align}${span2}">
+    return `<figure class="inline ${align}">
         <div class="frame">${inner}</div>
         <figcaption class="cap">${b.caption||''}${b.src?'':' <span class="placeholder-note">(replace with your photo or video)</span>'}</figcaption>
         ${b.scale?`<div class="scale">Scale: ${b.scale}</div>`:''}
@@ -902,13 +903,10 @@ function renderBlocks(blocks){
     if(b.type==='image' || b.type==='video'){
       const run = [];
       while(i < blocks.length && (blocks[i].type==='image' || blocks[i].type==='video')){ run.push(blocks[i]); i++; }
-      if(run.length === 1){
-        html += figure(run[0]);                       // lone photo → full width
+      if(run.length === 1 && (run[0].align === 'left' || run[0].align === 'right')){
+        html += figure(run[0]);                       // explicit float beside text
       } else {
-        const cells = run.map((blk, idx)=>
-          figure(blk, { align:'full', span2: (run.length % 2 === 1) && (idx === run.length - 1) })
-        );
-        html += `<div class="photo-grid">${cells.join('')}</div>`;  // 2-up grid; odd trailing photo spans full width
+        html += `<div class="photo-grid">${run.map(blk=>figure(blk,{align:'full'})).join('')}</div>`;  // half-width cells, 2-up
       }
     } else if(b.type==='prompt'){
       const [phrase,cls] = P[b.kind] || ['',''];
