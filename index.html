@@ -269,7 +269,9 @@
   .photo-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin:4px 0 20px; align-items:start; }
   .photo-grid figure.inline{ width:100%; margin:0; float:none; }
   .photo-grid figure.span2{ grid-column:1 / -1; }
+  .photo-grid.single{ grid-template-columns:calc(50% - 10px); justify-content:center; }
   @media (max-width:820px){ .photo-grid{ grid-template-columns:1fr; } }
+  @media (max-width:820px){ .photo-grid.single{ grid-template-columns:1fr; } }
   figure.inline .cap{ font-size:13px; line-height:1.45; margin-top:8px; }
   figure.inline .scale{ font-family:var(--font-mono); font-size:10px; color:var(--rust); letter-spacing:.06em; margin-top:4px; text-transform:uppercase; }
   @media (max-width:820px){ figure.inline.left, figure.inline.right{ float:none; width:100%; margin:6px 0 18px; } }
@@ -873,17 +875,6 @@ function photoPlaceholder(){
     <circle cx="61" cy="34" r="2" fill="#b9a679" stroke="none"/></svg>`;
 }
 
-// ---- pick the right element for a media source: photo, local video, or YouTube/Vimeo link
-function mediaTag(src){
-  if(!src) return photoPlaceholder();
-  const yt = src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
-  if(yt) return `<iframe src="https://www.youtube.com/embed/${yt[1]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-  const vm = src.match(/vimeo\.com\/(\d+)/);
-  if(vm) return `<iframe src="https://player.vimeo.com/video/${vm[1]}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
-  if(/\.(mp4|mov|m4v|webm|ogg)$/i.test(src)) return `<video src="${src}" controls playsinline preload="metadata"></video>`;
-  return `<img src="${src}" alt="">`;
-}
-
 // ---- render the reflection essay: text / prompt / image blocks, with photos grouped into a half-width grid
 function renderBlocks(blocks){
   const P = { notice:['I notice…','pl-notice'], wonder:['I wonder…','pl-wonder'], reminds:['It reminds me of…','pl-reminds'] };
@@ -906,7 +897,7 @@ function renderBlocks(blocks){
       if(run.length === 1 && (run[0].align === 'left' || run[0].align === 'right')){
         html += figure(run[0]);                       // explicit float beside text
       } else {
-        html += `<div class="photo-grid">${run.map(blk=>figure(blk,{align:'full'})).join('')}</div>`;  // half-width cells, 2-up
+        html += `<div class="photo-grid${run.length===1?' single':''}">${run.map(blk=>figure(blk,{align:'full'})).join('')}</div>`;  // half-width cells; lone photo centered
       }
     } else if(b.type==='prompt'){
       const [phrase,cls] = P[b.kind] || ['',''];
