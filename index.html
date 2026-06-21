@@ -874,7 +874,16 @@ function photoPlaceholder(){
     <circle cx="42" cy="45" r="4" fill="#b9a679" stroke="none"/>
     <circle cx="61" cy="34" r="2" fill="#b9a679" stroke="none"/></svg>`;
 }
-
+// ---- pick the right element for a media source: photo, local video, or YouTube/Vimeo link
+function mediaTag(src){
+  if(!src) return photoPlaceholder();
+  const yt = src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  if(yt) return `<iframe src="https://www.youtube.com/embed/${yt[1]}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+  const vm = src.match(/vimeo\.com\/(\d+)/);
+  if(vm) return `<iframe src="https://player.vimeo.com/video/${vm[1]}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+  if(/\.(mp4|mov|m4v|webm|ogg)$/i.test(src)) return `<video src="${src}" controls playsinline preload="metadata"></video>`;
+  return `<img src="${src}" alt="">`;
+}
 // ---- render the reflection essay: text / prompt / image blocks, with photos grouped into a half-width grid
 function renderBlocks(blocks){
   const P = { notice:['I notice…','pl-notice'], wonder:['I wonder…','pl-wonder'], reminds:['It reminds me of…','pl-reminds'] };
